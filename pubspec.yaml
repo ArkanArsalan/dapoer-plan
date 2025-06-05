@@ -1,4 +1,4 @@
-name: dapoer_plan
+name: new_dapoer_plan_project_fresh
 description: A new Flutter project.
 
 publish_to: 'none'
@@ -6,7 +6,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <4.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -17,14 +17,19 @@ dependencies:
   http: ^1.4.0
   cupertino_icons: ^1.0.8
   tflite_flutter: ^0.11.0
+  # tflite_flutter_helper: ^0.3.1 
+  logger: ^2.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/model.tflite
+    - assets/model2.tflite
+    - assets/model3.tflite
     - assets/labels.txt

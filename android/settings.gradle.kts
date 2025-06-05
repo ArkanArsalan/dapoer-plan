@@ -1,13 +1,16 @@
+// android/settings.gradle.kts
+
 pluginManagement {
+    // KOREKSI UTAMA: Pindahkan definisi flutterSdkPath ke dalam blok pluginManagement
     val flutterSdkPath = run {
         val properties = java.util.Properties()
         file("local.properties").inputStream().use { properties.load(it) }
-        val flutterSdkPath = properties.getProperty("flutter.sdk")
-        require(flutterSdkPath != null) { "flutter.sdk not set in local.properties" }
-        flutterSdkPath
+        val path = properties.getProperty("flutter.sdk")
+        require(path != null) { "flutter.sdk not set in local.properties" }
+        path
     }
 
-    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle") // Sekarang flutterSdkPath akan dikenali
 
     repositories {
         google()
@@ -23,3 +26,5 @@ plugins {
 }
 
 include(":app")
+include(":flutter")
+project(":flutter").projectDir = file("../.android/Flutter")
