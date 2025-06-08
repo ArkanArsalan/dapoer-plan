@@ -1,10 +1,10 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
+import authRoutes from "./routes/auth.js";
 
 /* Configuration */
 const app = express();
@@ -17,7 +17,7 @@ dotenv.config();
 /* Setup database and Port */
 const PORT = process.env.PORT || 5000;
 mongoose
-    .connect(process.env.MONGGO_URL)
+    .connect(process.env.MONGGODB_URL)
     .then(() => {
         console.log("Database connected")
         app.listen(PORT, () => {
@@ -29,3 +29,4 @@ mongoose
     });
 
 /* Routes */
+app.use("/auth", authRoutes);
