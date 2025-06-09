@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
 import authRoutes from "./routes/auth.js";
+import ingredientRoutes from './routes/ingredient.js';
 
 /* Configuration */
 const app = express();
@@ -30,3 +31,4 @@ mongoose
 
 /* Routes */
 app.use("/auth", authRoutes);
+app.use("/detect/", ingredientRoutes);
