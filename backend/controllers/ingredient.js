@@ -3,17 +3,17 @@ import qs from 'qs';
 
 export const detectIngredient = async (req, res) => {
     try {
-        const { base64image } = req.body;
+        const { image } = req.body;
 
-        if (!base64image) {
-            return res.status(400).json({ error: 'Image (base64) is required' });
+        if (!image || typeof image !== 'string' || !image.startsWith('data:image')) {
+            return res.status(400).json({ error: "Please provide a valid base64 image string." });
         }
 
         const url = process.env.OBJECT_DETECTION_URL;
 
         const response = await axios.post(
             url,
-            qs.stringify({ base64image: base64image }),
+            qs.stringify({ base64image: image }),
             {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

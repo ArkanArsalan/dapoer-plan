@@ -9,9 +9,14 @@ app = Flask(__name__)
 model = YOLO("best.pt")
 
 def read_base64_image(base64_string):
+    # Strip the prefix if present
+    if base64_string.startswith("data:image"):
+        base64_string = base64_string.split(",")[1]
+
     image_data = base64.b64decode(base64_string)
     image = Image.open(io.BytesIO(image_data)).convert("RGB")
     return np.array(image)
+
 
 @app.route('/detect/ingredient', methods=['POST'])
 def detect_ingredient():
