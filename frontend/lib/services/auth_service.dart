@@ -23,14 +23,29 @@ class AuthService {
       final user = User.fromJson(data);
       await SecureStorage.saveToken(token);
       return AuthResponse(token: token, user: user);
-    } else {
-      return null;
     }
+    return null;
+  }
+
+  static Future<AuthResponse?> register(String username, String email, String password) async {
+    final res = await http.post(
+      Uri.parse('$API_BASE/auth/register'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username,
+        'email': email,
+        'password': password,
+      }),
+    );
+    if (res.statusCode == 201) {
+      final data = jsonDecode(res.body);
+      final user = User.fromJson({'userFound': data});
+      return AuthResponse(token: '', user: user);
+    }
+    return null;
   }
 
   static Future<void> logout() async {
     await SecureStorage.deleteToken();
   }
-
-  static Future<String?> getToken() => SecureStorage.getToken();
 }
