@@ -14,6 +14,11 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 dotenv.config();
+console.log('🔗 MONGODB:', process.env.MONGODB_URL?.substring(0,30) + '...');
+console.log('🔐 JWT_SECRET set?', !!process.env.JWT_SECRET);
+console.log('🧩 OBJECT_DET URL:', process.env.OBJECT_DETECTION_URL);
+console.log('🗝 OPENROUTER_KEY set?', !!process.env.OPENROUTER_API_KEY);
+
 
 /* Setup database and Port */
 const PORT = process.env.PORT || 5000;
