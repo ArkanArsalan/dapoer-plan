@@ -8,7 +8,7 @@ export const generateRecipe = async (req, res) => {
         const { ingredients } = req.body;
         let { recipeType } = req.body;
 
-        if (!ingredients || !Array.isArray(ingredients) || ingredients.length === 0) {
+        if (!ingredients) {
             return res.status(400).json({ error: 'Please provide a list of ingredients.' });
         }
 
@@ -18,7 +18,7 @@ export const generateRecipe = async (req, res) => {
             recipeType = 'general'
         }
 
-        const userPrompt = `Please generate a complete ${recipeType} recipe using the following ingredients: ${ingredients.join(', ')}. Include the dish name, a short description, the list of ingredients, and detailed step-by-step cooking instructions.`;
+        const userPrompt = `Please generate a complete ${recipeType} recipe using the following ingredients: ${ingredients}. Include the dish name, a short description, the list of ingredients, and detailed step-by-step cooking instructions.`;
 
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
