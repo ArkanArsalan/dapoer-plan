@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import dotenv from 'dotenv';
 import authRoutes from "./routes/auth.js";
 import ingredientRoutes from './routes/ingredient.js';
+import recipeRoutes from './routes/recipe.js';
 
 /* Configuration */
 const app = express();
@@ -13,6 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
 dotenv.config();
 
 /* Setup database and Port */
@@ -32,3 +34,4 @@ mongoose
 /* Routes */
 app.use("/auth", authRoutes);
 app.use("/detect/", ingredientRoutes);
+app.use("/generate/", recipeRoutes);
