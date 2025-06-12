@@ -25,7 +25,7 @@ console.log('🗝 OPENROUTER_KEY set?', !!process.env.OPENROUTER_API_KEY);
 /* Setup database and Port */
 const PORT = process.env.PORT || 5000;
 mongoose
-    .connect(process.env.MONGGODB_URL)
+    .connect(process.env.MONGODB_URL)
     .then(() => {
         console.log("Database connected")
         app.listen(PORT, () => {
