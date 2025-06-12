@@ -12,8 +12,9 @@ class DetectionResultPage extends StatefulWidget {
 }
 
 class _DetectionResultState extends State<DetectionResultPage> {
-  Map<String, dynamic>? _result;
+  String? _resultText;
   bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -22,16 +23,33 @@ class _DetectionResultState extends State<DetectionResultPage> {
   }
 
   Future<void> _runDetect() async {
-    final bytes = await widget.image.readAsBytes();
-    final base64img = 'data:image/png;base64,${base64Encode(bytes)}';
+    try {
+      final bytes = await widget.image.readAsBytes();
+      final base64img = 'data:image/png;base64,${base64Encode(bytes)}';
+      final res = await DetectService.detectThumbnail(base64img);
 
-    // Panggil method yang benar dari DetectService
-    final r = await DetectService.detectThumbnail(base64img);
-
-    setState(() {
-      _result = r;
-      _loading = false;
-    });
+      if (res.containsKey('error')) {
+        setState(() {
+          _error = res['error'];
+          _loading = false;
+        });
+      } else if (res.containsKey('result')) {
+        setState(() {
+          _resultText = res['result']?.toString();
+          _loading = false;
+        });
+      } else {
+        setState(() {
+          _error = 'Respons tak terduga dari server';
+          _loading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Error: $e';
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -45,28 +63,27 @@ class _DetectionResultState extends State<DetectionResultPage> {
   }
 
   Widget _buildResultUI() {
-    if (_result == null || _result!.containsKey('error')) {
-      final err = _result?['error'] ?? 'Tidak ada hasil';
-      return Center(child: Text('Error: $err'));
+    if (_error != null) {
+      return Center(child: Text(_error!));
     }
 
-    return Column(
-      children: [
-        Image.file(widget.image, height: 200),
-        Expanded(
-          child: ListView(
-            children: _result!.entries.map((e) {
-              final v = e.value;
-              return ListTile(
-                title: Text(e.key),
-                trailing: v is num
-                    ? Text('${(v * 100).toStringAsFixed(1)}%')
-                    : Text(v.toString()),
-              );
-            }).toList(),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Image.file(widget.image, height: 200),
+          const SizedBox(height: 16),
+          const Text(
+            'Detected Ingredients:',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
-        ),
-      ],
+          const SizedBox(height: 8),
+          Text(
+            _resultText ?? 'No result',
+            style: const TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
     );
   }
 }
