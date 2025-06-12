@@ -1,2 +1,6 @@
-// const String API_BASE = 'http://10.0.2.2:5000';
-const String API_BASE = 'http://localhost:5000';
+
+// Buat Android
+const String API_BASE = 'http://10.0.2.2:5000';
+
+// Buat Web
+// const String API_BASE = 'http://localhost:5000';
