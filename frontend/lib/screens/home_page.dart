@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
 
   // Daftar halaman untuk tiap tab
   late final List<Widget> _pages = [
-    Center(child: Text('Welcome, ${widget.user.username}!')),
+    Center(child: Text('Welcome, ${widget.user.username}!', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
     CameraPage(),
     GeneratePage(),
   ];
@@ -38,9 +38,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dapoer Plan'),
+        title: const Text(
+          'DapoerPlan',
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
+        ),
+        backgroundColor: Colors.white, // AppBar background color
+        elevation: 0, // Removes the shadow
         actions: [
-          IconButton(onPressed: _logout, icon: const Icon(Icons.exit_to_app)),
+          IconButton(
+            onPressed: _logout,
+            icon: const Icon(Icons.exit_to_app, color: Colors.green), // Logout icon
+          ),
         ],
       ),
       body: IndexedStack(
@@ -51,10 +63,21 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _currentIndex,
         onTap: _onTap,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: 'Scan'),
-          BottomNavigationBarItem(icon: Icon(Icons.restaurant_menu), label: 'Generate'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, color: Colors.green),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera_alt, color: Colors.green),
+            label: 'Scan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant_menu, color: Colors.green),
+            label: 'Generate',
+          ),
         ],
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.black,
       ),
     );
   }

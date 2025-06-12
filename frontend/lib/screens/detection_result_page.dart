@@ -25,6 +25,7 @@ class _DetectionResultState extends State<DetectionResultPage> {
     final bytes = await widget.image.readAsBytes();
     final base64img = 'data:image/png;base64,${base64Encode(bytes)}';
 
+    // Panggil method yang benar dari DetectService
     final r = await DetectService.detectThumbnail(base64img);
 
     setState(() {
