@@ -45,9 +45,39 @@ export const login = async (req, res) => {
             res.status(500).json({ error: err.message });
         }
 
-        const token = jwt.sign({ id: User._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({
+            id: userFound._id,
+            username: userFound.username,
+            email: userFound.email
+        }, process.env.JWT_SECRET);
+
         delete userFound.password;
         res.status(201).json({ token, userFound });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+/* Verify Token for Login */
+export const verifyToken = async (req, res) => {
+    try {
+        let token = req.header("Authorization");
+
+        if (!token) {
+            return res.status(403).send("Access Denied");
+        }
+
+        if (token.startsWith("Bearer ")) {
+            token = token.slice(7).trimLeft();
+        }
+
+        const verified = jwt.verify(token, process.env.JWT_SECRET);
+
+        return res.status(200).json({
+            message: "Access allowed",
+            user: verified
+        })
+
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
