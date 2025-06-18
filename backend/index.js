@@ -9,6 +9,7 @@ import ingredientRoutes from './routes/ingredient.js';
 import recipeRoutes from './routes/recipe.js';
 import historyRoutes from './routes/history.js';
 import { verifyToken } from './middleware/auth.js';
+import { loadRecipes } from './utils/csvRecipeLoader.js';
 
 /* Configuration */
 const app = express();
@@ -28,6 +29,7 @@ console.log('🗝 OPENROUTER_KEY set?', !!process.env.OPENROUTER_API_KEY);
 const PORT = process.env.PORT || 5000;
 mongoose
     .connect(process.env.MONGODB_URL)
+    .then(loadRecipes())
     .then(() => {
         console.log("Database connected")
         app.listen(PORT, () => {
@@ -41,5 +43,5 @@ mongoose
 /* Routes */
 app.use("/auth", authRoutes);
 app.use("/detect/", ingredientRoutes);
-app.use("/generate/", recipeRoutes);
+app.use("/recipe/", recipeRoutes);
 app.use("/history/", verifyToken, historyRoutes);

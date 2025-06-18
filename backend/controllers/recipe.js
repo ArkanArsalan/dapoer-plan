@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
+import { recipes } from '../utils/csvRecipeLoader.js';
 
 dotenv.config();
 
@@ -50,3 +51,65 @@ export const generateRecipe = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
+export const getRandomRecipe = (req, res) => {
+    try {
+        const { limit } = req.query;
+        const numRecipes = parseInt(limit, 10) || 1;
+
+        if (!recipes || recipes.length === 0) {
+            return res.status(503).json({ message: "Recipes not loaded yet" });
+        }
+
+        const maxLimit = Math.min(numRecipes, recipes.length);
+
+        // Shuffle recipes using Fisher-Yates algorithm
+        const shuffled = [...recipes];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        const randomRecipes = shuffled.slice(0, maxLimit);
+
+        res.json({
+            success: true,
+            data: randomRecipes
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+export const getRecipes = (req, res) => {
+    try {
+        let { page, limit } = req.query;
+
+        page = parseInt(page) || 1;
+        limit = parseInt(limit) || 1;
+        const offset = (page - 1) * limit;
+
+        if (!recipes || recipes.length === 0) {
+            return res.status(503).json({ message: "Recipes not loaded yet" });
+        }
+
+        const pagedRecipes = recipes.slice(offset, offset + limit);
+
+        res.json({
+            success: true,
+            data: pagedRecipes,
+            pagination: {
+                currentPage: page,
+                totalItems: recipes.length,
+                totalPages: Math.ceil(recipes.length / limit)
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
