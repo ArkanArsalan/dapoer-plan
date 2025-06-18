@@ -7,6 +7,8 @@ import dotenv from 'dotenv';
 import authRoutes from "./routes/auth.js";
 import ingredientRoutes from './routes/ingredient.js';
 import recipeRoutes from './routes/recipe.js';
+import historyRoutes from './routes/history.js';
+import { verifyToken } from './middleware/auth.js';
 
 /* Configuration */
 const app = express();
@@ -16,7 +18,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 dotenv.config();
-console.log('🔗 MONGODB:', process.env.MONGODB_URL?.substring(0,30) + '...');
+console.log('🔗 MONGODB:', process.env.MONGODB_URL?.substring(0, 30) + '...');
 console.log('🔐 JWT_SECRET set?', !!process.env.JWT_SECRET);
 console.log('🧩 OBJECT_DET URL:', process.env.OBJECT_DETECTION_URL);
 console.log('🗝 OPENROUTER_KEY set?', !!process.env.OPENROUTER_API_KEY);
@@ -40,3 +42,4 @@ mongoose
 app.use("/auth", authRoutes);
 app.use("/detect/", ingredientRoutes);
 app.use("/generate/", recipeRoutes);
+app.use("/history/", verifyToken, historyRoutes);
