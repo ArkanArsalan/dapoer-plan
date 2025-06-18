@@ -79,6 +79,14 @@ export const verifyToken = async (req, res) => {
         })
 
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        if (err instanceof jwt.JsonWebTokenError) {
+            return res.status(401).json({
+                message: "Access denied - invalid token"
+            });
+        }
+        return res.status(500).json({
+            message: "An error occurred",
+            error: err.message
+        });
     }
 }
