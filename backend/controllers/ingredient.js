@@ -61,7 +61,7 @@ export const detectIngredientLLM = async (req, res) => {
         messages: [{
           role: "user",
           content: [
-            { type: "text", text: "List ingredients in the image, use comma to seperate each ingredient, just ingredient dont add any other word" },
+            { type: "text", text: "List edible ingredients in the image, use comma to seperate each ingredient, just ingredient dont add any other word, other than edible ingredient no result" },
             { type: "image_url", image_url: { url: image } }
           ]
         }]
