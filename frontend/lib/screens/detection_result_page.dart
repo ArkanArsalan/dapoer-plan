@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import '../services/detect_service.dart';
 import '../services/generate_service.dart'; // Import the GenerateService
+import '../services/history_service.dart';
+
 
 class DetectionResultPage extends StatefulWidget {
   final File image;
@@ -79,36 +81,46 @@ class _DetectionResultState extends State<DetectionResultPage> {
     }
   }
 
-  /// Calls the GenerateService to generate a recipe based on detected ingredients.
-  Future<void> _generateRecipe() async {
-    if (_detectedIngredients.isEmpty) {
-      setState(() {
-        _recipeError = 'Tidak ada bahan terdeteksi untuk membuat resep.';
-      });
-      return;
-    }
+ // ... bagian atas tetap sama
 
+Future<void> _generateRecipe() async {
+  if (_detectedIngredients.isEmpty) {
     setState(() {
-      _generatingRecipe = true;
-      _recipeError = null; // Clear previous errors
-      _generatedRecipe = null; // Clear previous recipe
+      _recipeError = 'Tidak ada bahan terdeteksi untuk membuat resep.';
+    });
+    return;
+  }
+
+  setState(() {
+    _generatingRecipe = true;
+    _recipeError = null;
+    _generatedRecipe = null;
+  });
+
+  try {
+    final recipe = await GenerateService.generate(_detectedIngredients);
+    setState(() {
+      _generatedRecipe = recipe;
     });
 
-    try {
-      final recipe = await GenerateService.generate(_detectedIngredients);
-      setState(() {
-        _generatedRecipe = recipe;
-      });
-    } catch (e) {
-      setState(() {
-        _recipeError = 'Gagal membuat resep: $e';
-      });
-    } finally {
-      setState(() {
-        _generatingRecipe = false;
-      });
+    await HistoryService.addHistory(_detectedIngredients.join(', '), recipe);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Berhasil disimpan ke history')),
+      );
     }
+  } catch (e) {
+    setState(() {
+      _recipeError = 'Gagal membuat resep: $e';
+    });
+  } finally {
+    setState(() {
+      _generatingRecipe = false;
+    });
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {

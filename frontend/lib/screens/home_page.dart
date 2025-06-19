@@ -1,7 +1,10 @@
+// D:\PPB\PPB Final\dapoer-plan\frontend\lib\screens\home_page.dart
+
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import 'camera_page.dart';
 import 'generate_page.dart';
+import 'history_page.dart';
 import 'login_page.dart';
 import '../services/auth_service.dart';
 
@@ -16,11 +19,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  // Daftar halaman untuk tiap tab
   late final List<Widget> _pages = [
     Center(child: Text('Welcome, ${widget.user.username}!', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
     CameraPage(),
     GeneratePage(),
+    HistoryPage(),  
   ];
 
   void _onTap(int idx) {
@@ -46,12 +49,12 @@ class _HomePageState extends State<HomePage> {
             color: Colors.green,
           ),
         ),
-        backgroundColor: Colors.white, // AppBar background color
-        elevation: 0, // Removes the shadow
+        backgroundColor: Colors.white,
+        elevation: 0,
         actions: [
           IconButton(
             onPressed: _logout,
-            icon: const Icon(Icons.exit_to_app, color: Colors.green), // Logout icon
+            icon: const Icon(Icons.exit_to_app, color: Colors.green),
           ),
         ],
       ),
@@ -74,6 +77,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant_menu, color: Colors.green),
             label: 'Generate',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history, color: Colors.green),
+            label: 'History',
           ),
         ],
         selectedItemColor: Colors.green,

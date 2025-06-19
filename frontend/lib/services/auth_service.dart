@@ -20,12 +20,14 @@ class AuthService {
     if (res.statusCode == 201) {
       final data = jsonDecode(res.body);
       final token = data['token'] as String;
-      final user = User.fromJson(data);
+      final user = User.fromJson(data['userFound']);  // ambil userFound
       await SecureStorage.saveToken(token);
       return AuthResponse(token: token, user: user);
     }
     return null;
   }
+
+
 
   static Future<AuthResponse?> register(String username, String email, String password) async {
     final res = await http.post(
@@ -39,11 +41,13 @@ class AuthService {
     );
     if (res.statusCode == 201) {
       final data = jsonDecode(res.body);
-      final user = User.fromJson({'userFound': data});
+      final user = User.fromJson(data);
       return AuthResponse(token: '', user: user);
     }
     return null;
   }
+
+
 
   static Future<void> logout() async {
     await SecureStorage.deleteToken();
