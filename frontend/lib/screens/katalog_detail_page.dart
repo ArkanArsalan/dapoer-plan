@@ -11,32 +11,70 @@ class KatalogDetailPage extends StatelessWidget {
     final steps = (recipe['steps'] as String?) ?? 'Tidak ada langkah-langkah';
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        backgroundColor: Colors.green.shade700,
+        title: Text(
+          'Recipe Detail',
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        elevation: 4,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Recipe Title
               Text(
                 title,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green.shade700,
+                ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
+
+              // Ingredients Section
               const Text(
                 'Ingredients:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
+              const SizedBox(height: 8),
               Text(
                 ingredients.replaceAll('--', '\n'),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
+
+              // Steps Section
               const Text(
                 'Steps:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
+              const SizedBox(height: 8),
               Text(
                 steps.replaceAll('--', '\n'),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
               ),
             ],
           ),

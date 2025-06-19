@@ -21,7 +21,10 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Future<void> _loadHistory() async {
-    setState(() { _loading = true; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final data = await HistoryService.fetchHistory();
       setState(() {
@@ -38,39 +41,91 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (_error != null) {
-      return Center(child: Text('Error: $_error'));
-    }
-
-    if (_history.isEmpty) {
-      return const Center(child: Text('Belum ada history.'));
-    }
-
-    return ListView.builder(
-      itemCount: _history.length,
-      itemBuilder: (context, index) {
-        final item = _history[index];
-        return Card(
-          margin: const EdgeInsets.all(8),
-          child: ListTile(
-            title: Text(item['prompt']),
-            subtitle: Text(
-              item['recipe'],
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => HistoryDetailPage(historyItem: item, onUpdate: _loadHistory),
-              ));
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Riwayat'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Segarkan',
+            onPressed: _loadHistory,
           ),
-        );
-      },
+        ],
+      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'Terjadi kesalahan: $_error',
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : _history.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Belum ada history.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _loadHistory,
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: _history.length,
+                        itemBuilder: (context, index) {
+                          final item = _history[index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              leading: Icon(Icons.history,
+                                  color: Colors.green[700], size: 28),
+                              title: Text(
+                                item['prompt'],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              subtitle: Text(
+                                item['recipe'],
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: Colors.grey[700]),
+                              ),
+                              trailing: Icon(Icons.arrow_forward_ios,
+                                  color: Colors.green[700]),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => HistoryDetailPage(
+                                    historyItem: item,
+                                    onUpdate: _loadHistory,
+                                  ),
+                                ));
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
     );
   }
 }

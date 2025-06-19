@@ -16,11 +16,22 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   camera: ^0.11.1   
   image_picker: ^0.8.5+3
+  flutter_native_splash: ^2.4.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_markdown: ^0.6.8
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/logo.png 
+
+flutter_native_splash:
+  color: "#FFFFFF" # warna background splash (putih misalnya)
+  image: assets/logo.png # path ke logo kamu
+  android: true
+  ios: true
+

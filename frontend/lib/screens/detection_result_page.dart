@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../services/detect_service.dart';
-import '../services/generate_service.dart'; // Import the GenerateService
+import '../services/generate_service.dart';
 import '../services/history_service.dart';
-
 
 class DetectionResultPage extends StatefulWidget {
   final File image;
@@ -15,12 +14,9 @@ class DetectionResultPage extends StatefulWidget {
 }
 
 class _DetectionResultState extends State<DetectionResultPage> {
-  // Original state for detection
-  List<String> _detectedIngredients = []; // Changed from String? to List<String>
-  bool _loadingDetection = true; // Renamed for clarity
-  String? _detectionError; // Renamed for clarity
-
-  // New state for recipe generation
+  List<String> _detectedIngredients = [];
+  bool _loadingDetection = true;
+  String? _detectionError;
   String? _generatedRecipe;
   bool _generatingRecipe = false;
   String? _recipeError;
@@ -31,8 +27,6 @@ class _DetectionResultState extends State<DetectionResultPage> {
     _runDetect();
   }
 
-  /// Runs the object detection service.
-  /// Parses the detection result into a list of strings for ingredients.
   Future<void> _runDetect() async {
     try {
       final bytes = await widget.image.readAsBytes();
@@ -45,12 +39,10 @@ class _DetectionResultState extends State<DetectionResultPage> {
           _loadingDetection = false;
         });
       } else if (res.containsKey('result')) {
-        // Assuming 'result' can be a List<dynamic> or a String representation of a list
         List<String> parsedIngredients = [];
         if (res['result'] is List) {
           parsedIngredients = List<String>.from(res['result']);
         } else if (res['result'] is String) {
-          // Attempt to parse string like "[item1, item2]" or "item1, item2"
           String resultString = res['result'].toString()
               .replaceAll('[', '')
               .replaceAll(']', '')
@@ -81,46 +73,42 @@ class _DetectionResultState extends State<DetectionResultPage> {
     }
   }
 
- // ... bagian atas tetap sama
-
-Future<void> _generateRecipe() async {
-  if (_detectedIngredients.isEmpty) {
-    setState(() {
-      _recipeError = 'Tidak ada bahan terdeteksi untuk membuat resep.';
-    });
-    return;
-  }
-
-  setState(() {
-    _generatingRecipe = true;
-    _recipeError = null;
-    _generatedRecipe = null;
-  });
-
-  try {
-    final recipe = await GenerateService.generate(_detectedIngredients);
-    setState(() {
-      _generatedRecipe = recipe;
-    });
-
-    await HistoryService.addHistory(_detectedIngredients.join(', '), recipe);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Berhasil disimpan ke history')),
-      );
+  Future<void> _generateRecipe() async {
+    if (_detectedIngredients.isEmpty) {
+      setState(() {
+        _recipeError = 'Tidak ada bahan terdeteksi untuk membuat resep.';
+      });
+      return;
     }
-  } catch (e) {
+
     setState(() {
-      _recipeError = 'Gagal membuat resep: $e';
+      _generatingRecipe = true;
+      _recipeError = null;
+      _generatedRecipe = null;
     });
-  } finally {
-    setState(() {
-      _generatingRecipe = false;
-    });
+
+    try {
+      final recipe = await GenerateService.generate(_detectedIngredients);
+      setState(() {
+        _generatedRecipe = recipe;
+      });
+
+      await HistoryService.addHistory(_detectedIngredients.join(', '), recipe);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Berhasil disimpan ke history')),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _recipeError = 'Gagal membuat resep: $e';
+      });
+    } finally {
+      setState(() {
+        _generatingRecipe = false;
+      });
+    }
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -132,10 +120,9 @@ Future<void> _generateRecipe() async {
     );
   }
 
-  /// Builds the UI to display detection results and the recipe generation option.
   Widget _buildResultUI() {
     if (_detectionError != null) {
-      return Center(child: Text(_detectionError!));
+      return Center(child: Text(_detectionError!, style: TextStyle(color: Colors.red, fontSize: 18)));
     }
 
     return SingleChildScrollView(
@@ -162,31 +149,31 @@ Future<void> _generateRecipe() async {
           _detectedIngredients.isEmpty
               ? const Text('Tidak ada bahan terdeteksi.', style: TextStyle(fontSize: 16))
               : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _detectedIngredients
-                .map((ingredient) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.0),
-              child: Text('- $ingredient', style: const TextStyle(fontSize: 16)),
-            ))
-                .toList(),
-          ),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _detectedIngredients
+                      .map((ingredient) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2.0),
+                            child: Text('- $ingredient', style: const TextStyle(fontSize: 16)),
+                          ))
+                      .toList(),
+                ),
           const SizedBox(height: 24),
 
           // Button to generate recipe
           Center(
             child: ElevatedButton.icon(
               onPressed: _generatingRecipe || _detectedIngredients.isEmpty
-                  ? null // Disable button while generating or if no ingredients
+                  ? null
                   : _generateRecipe,
               icon: _generatingRecipe
                   ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
                   : const Icon(Icons.menu_book),
               label: Text(_generatingRecipe ? 'Membuat Resep...' : 'Buat Resep'),
               style: ElevatedButton.styleFrom(
