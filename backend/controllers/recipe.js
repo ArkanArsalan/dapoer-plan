@@ -19,7 +19,33 @@ export const generateRecipe = async (req, res) => {
             recipeType = 'general'
         }
 
-        const userPrompt = `Please generate a complete ${recipeType} recipe using the following ingredients: ${ingredients}. Include the dish name, a short description, the list of ingredients, and detailed step-by-step cooking instructions.`;
+        const userPrompt = `Buatkan 1 resep masakan khas ${recipeType} berdasarkan bahan-bahan berikut (tidak harus semua digunakan, pilih yang cocok dan realistis untuk dimasak bersama): ${ingredients}
+
+                            Output HARUS ditulis dalam format *Markdown* yang STRUKTURNYA TIDAK BOLEH BERUBAH. Gunakan struktur seperti ini:
+
+                            ## Judul Resep
+                            [Nama resep masakan khas Indonesia]
+
+                            ### Bahan-bahan
+                            - [Bahan 1]
+                            - [Bahan 2]
+                            - ...
+
+                            ### Cara Memasak
+                            1. [Langkah 1]
+                            2. [Langkah 2]
+                            3. ...
+
+                            ### Informasi Nutrisi (Perkiraan per Porsi)
+                            - Kalori: [jumlah] kcal  
+                            - Protein: [jumlah] g  
+                            - Lemak: [jumlah] g  
+                            - Karbohidrat: [jumlah] g
+
+                            Catatan:
+                            - TIDAK BOLEH ada teks tambahan di luar struktur itu.
+                            - JANGAN memberikan pengantar, penjelasan, atau penutup.
+                            `
 
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",

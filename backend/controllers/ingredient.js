@@ -48,7 +48,7 @@ export const detectIngredientLLM = async (req, res) => {
         messages: [{
           role: "user",
           content: [
-            { type: "text", text: "List ingredients in the image, use comma to seperate each ingredient, just ingredient dont add any other word" },
+            { type: "text", text: "List the ingredients you see in the image. - Use commas to separate each ingredient. - Only include ingredients from the following list: banana, basil, basil_leaves, bay_leaves, beans, bell_pepper_green, bell_pepper_red, bell_pepper_sliced_green, bell_pepper_sliced_red, bell_pepper_sliced_yellow, bell_pepper_yellow, broccoli, brus_capusta, butter, cabbage, cake, carrot, carrot_sliced, cassava, cayliflower, celery, cheese, chicken_breast, chicken_complete, chicken_leg, chicken_thigh, chicken_wing, chili_sauce, cinnamon, cloves, cocoa, corn, cucumber, egg, egg_complete, eggplant, eggplant_complete, eggplant_sliced, fish_circular_orange, fish_circular_white, fish_complete, fish_complete_no_head, fish_fillet_orange, fish_fillet_white, flour, garlic, garlic_clove, ginger, java_turmeric, lasagna, legum, lettuce, lime, lime_complete_green, lime_complete_yellow, lime_leaves, meat_ground, meat_non_ground, milk, mushroom, mushroom_sliced, nut, nutmeg, nuts, onion_garlic, onion_half, onion_orange, onion_purple, onion_white, parsley, pasta, pepper_black, pepper_green, pepper_red, potato, potato_half, potato_no_skin, rice, salad, sausage, shrimp, shrimp_group, spaghetti, spinach, star_anise, steak, sugar, sweet_potato, sweet_soy_sauce, tempeh, tofu, tomato, tomato_half, walnut, watercress, yogurt, zucchini, zucchini_sliced" },
             { type: "image_url", image_url: { url: image } }
           ]
         }]
