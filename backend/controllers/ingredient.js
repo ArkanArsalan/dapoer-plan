@@ -23,11 +23,24 @@ export const detectIngredient = async (req, res) => {
       }
     );
 
-    return res.json(response.data);
+    const detections = response.data.detections || [];
+
+    const ingredients = detections
+      .filter(det => det.confidence > 0.7)
+      .map(det => det.class_name)
+      .filter((value, index, self) => self.indexOf(value) === index);
+
+    const formatted = ingredients.map(name =>
+      name.charAt(0).toUpperCase() + name.slice(1)
+    );
+
+    return res.json({ result: formatted.join(", ") });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
+
+
 
 export const detectIngredientLLM = async (req, res) => {
   try {
