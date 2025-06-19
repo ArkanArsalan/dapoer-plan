@@ -60,50 +60,77 @@ class _KatalogPageState extends State<KatalogPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Katalog Resep')),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Search Bar
                 Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      labelText: 'Cari resep...',
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          _search('');
-                        },
-                      ),
+                  padding: const EdgeInsets.all(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    onSubmitted: _search,
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        hintText: 'Cari resep...',
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear, color: Colors.grey),
+                          onPressed: () {
+                            _searchController.clear();
+                            _search('');
+                          },
+                        ),
+                      ),
+                      onSubmitted: _search,
+                    ),
                   ),
                 ),
+                // Recipes List
                 Expanded(
                   child: _recipes.isEmpty
-                      ? const Center(child: Text('Tidak ada resep ditemukan'))
+                      ? const Center(child: Text('Tidak ada resep ditemukan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)))
                       : ListView.builder(
                           itemCount: _recipes.length,
                           itemBuilder: (context, index) {
                             final item = _recipes[index];
-                            final title = (item['title'] as String?) ?? 'Tanpa Judul';
-                            final ingredients = (item['ingredients'] as String?) ?? 'Tidak ada bahan';
+                            final title = item['title'] ?? 'Tanpa Judul';
+                            final ingredients = (item['ingredients'] as String?)?.split('--').take(2).join(', ') ?? 'Tidak ada bahan';
 
                             return Card(
-                              margin: const EdgeInsets.all(8),
+                              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                               child: ListTile(
-                                title: Text(title),
+                                contentPadding: const EdgeInsets.all(16),
+                                title: Text(
+                                  title,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green.shade700,
+                                  ),
+                                ),
                                 subtitle: Text(
-                                  ingredients
-                                      .split('--')
-                                      .take(2)
-                                      .join(', '),
+                                  ingredients,
+                                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
+                                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.green),
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -117,27 +144,27 @@ class _KatalogPageState extends State<KatalogPage> {
                           },
                         ),
                 ),
+                // Pagination Controls
                 Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        onPressed: _currentPage > 1
-                            ? () => _changePage(_currentPage - 1)
-                            : null,
-                        icon: const Icon(Icons.arrow_back),
+                        onPressed: _currentPage > 1 ? () => _changePage(_currentPage - 1) : null,
+                        icon: const Icon(Icons.arrow_back, color: Colors.green),
                       ),
-                      Text('Page $_currentPage / $_totalPages'),
+                      Text(
+                        'Page $_currentPage / $_totalPages',
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                       IconButton(
-                        onPressed: _currentPage < _totalPages
-                            ? () => _changePage(_currentPage + 1)
-                            : null,
-                        icon: const Icon(Icons.arrow_forward),
+                        onPressed: _currentPage < _totalPages ? () => _changePage(_currentPage + 1) : null,
+                        icon: const Icon(Icons.arrow_forward, color: Colors.green),
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
     );
