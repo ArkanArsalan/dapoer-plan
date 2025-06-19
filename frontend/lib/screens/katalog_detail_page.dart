@@ -6,8 +6,12 @@ class KatalogDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final title = (recipe['title'] as String?) ?? 'Tanpa Judul';
+    final ingredients = (recipe['ingredients'] as String?) ?? 'Tidak ada bahan';
+    final steps = (recipe['steps'] as String?) ?? 'Tidak ada langkah-langkah';
+
     return Scaffold(
-      appBar: AppBar(title: Text(recipe['title'] ?? 'Detail Resep')),
+      appBar: AppBar(title: Text(title)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -15,7 +19,7 @@ class KatalogDetailPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                recipe['title'] ?? 'Tanpa Judul',
+                title,
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -24,9 +28,7 @@ class KatalogDetailPage extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
-                (recipe['ingredients'] ?? 'Tidak ada bahan')
-                    .toString()
-                    .replaceAll('--', '\n'),
+                ingredients.replaceAll('--', '\n'),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -34,9 +36,7 @@ class KatalogDetailPage extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
-                (recipe['steps'] ?? 'Tidak ada langkah-langkah')
-                    .toString()
-                    .replaceAll('--', '\n'),
+                steps.replaceAll('--', '\n'),
               ),
             ],
           ),

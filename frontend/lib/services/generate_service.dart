@@ -5,7 +5,7 @@ import '../utils/constants.dart';
 class GenerateService {
   static Future<String> generate(List<String> ingredients) async {
     final res = await http.post(
-      Uri.parse('$API_BASE/generate/recipe'),
+      Uri.parse('$API_BASE/recipe/generate'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'ingredients': ingredients}),
     );

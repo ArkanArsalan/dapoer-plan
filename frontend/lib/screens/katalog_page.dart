@@ -13,9 +13,9 @@ class _KatalogPageState extends State<KatalogPage> {
   int _currentPage = 1;
   int _totalPages = 1;
   List<dynamic> _recipes = [];
-  List<dynamic> _filteredRecipes = [];
-  final TextEditingController _searchController = TextEditingController();
   bool _loading = true;
+  String _keyword = '';
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -26,17 +26,15 @@ class _KatalogPageState extends State<KatalogPage> {
   Future<void> _fetchRecipes() async {
     setState(() => _loading = true);
     try {
-      final data = await KatalogService.fetchRecipes(_currentPage, 5);
+      final data = await KatalogService.fetchRecipes(_currentPage, 15, keyword: _keyword);
       setState(() {
         _recipes = data['data'] ?? [];
-        _filteredRecipes = _recipes;
         _totalPages = data['pagination']?['totalPages'] ?? 1;
         _loading = false;
       });
     } catch (e) {
       setState(() {
         _recipes = [];
-        _filteredRecipes = [];
         _loading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,19 +44,11 @@ class _KatalogPageState extends State<KatalogPage> {
   }
 
   void _search(String query) {
-    if (query.isEmpty) {
-      setState(() => _filteredRecipes = _recipes);
-      return;
-    }
-
-    final filtered = _recipes.where((item) {
-      final title = (item['title'] ?? '').toString().toLowerCase();
-      return title.contains(query.toLowerCase());
-    }).toList();
-
     setState(() {
-      _filteredRecipes = filtered;
+      _keyword = query;
+      _currentPage = 1;
     });
+    _fetchRecipes();
   }
 
   void _changePage(int page) {
@@ -89,24 +79,25 @@ class _KatalogPageState extends State<KatalogPage> {
                         },
                       ),
                     ),
-                    onChanged: _search,
+                    onSubmitted: _search,
                   ),
                 ),
                 Expanded(
-                  child: _filteredRecipes.isEmpty
+                  child: _recipes.isEmpty
                       ? const Center(child: Text('Tidak ada resep ditemukan'))
                       : ListView.builder(
-                          itemCount: _filteredRecipes.length,
+                          itemCount: _recipes.length,
                           itemBuilder: (context, index) {
-                            final item = _filteredRecipes[index];
+                            final item = _recipes[index];
+                            final title = (item['title'] as String?) ?? 'Tanpa Judul';
+                            final ingredients = (item['ingredients'] as String?) ?? 'Tidak ada bahan';
+
                             return Card(
                               margin: const EdgeInsets.all(8),
                               child: ListTile(
-                                // Hilangkan leading gambar
-                                title: Text(item['title'] ?? 'Tanpa Judul'),
+                                title: Text(title),
                                 subtitle: Text(
-                                  (item['ingredients'] ?? 'Tidak ada bahan')
-                                      .toString()
+                                  ingredients
                                       .split('--')
                                       .take(2)
                                       .join(', '),
@@ -117,8 +108,7 @@ class _KatalogPageState extends State<KatalogPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) =>
-                                          KatalogDetailPage(recipe: item),
+                                      builder: (_) => KatalogDetailPage(recipe: item),
                                     ),
                                   );
                                 },
