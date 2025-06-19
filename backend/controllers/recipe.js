@@ -86,7 +86,7 @@ export const getRandomRecipe = (req, res) => {
 
 export const getRecipes = (req, res) => {
     try {
-        let { page, limit } = req.query;
+        let { page, limit, keyword } = req.query;
 
         page = parseInt(page) || 1;
         limit = parseInt(limit) || 1;
@@ -96,15 +96,24 @@ export const getRecipes = (req, res) => {
             return res.status(503).json({ message: "Recipes not loaded yet" });
         }
 
-        const pagedRecipes = recipes.slice(offset, offset + limit);
+        let filteredRecipes = recipes;
+        if (keyword) {
+            const lowerKeyword = keyword.toLowerCase();
+            filteredRecipes = recipes.filter(recipe =>
+                recipe.title?.toLowerCase().includes(lowerKeyword) ||
+                recipe.description?.toLowerCase().includes(lowerKeyword)
+            );
+        }
+
+        const pagedRecipes = filteredRecipes.slice(offset, offset + limit);
 
         res.json({
             success: true,
             data: pagedRecipes,
             pagination: {
                 currentPage: page,
-                totalItems: recipes.length,
-                totalPages: Math.ceil(recipes.length / limit)
+                totalItems: filteredRecipes.length,
+                totalPages: Math.ceil(filteredRecipes.length / limit)
             }
         });
     } catch (error) {
