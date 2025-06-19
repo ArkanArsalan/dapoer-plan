@@ -45,6 +45,7 @@ export const generateRecipe = async (req, res) => {
                             Catatan:
                             - TIDAK BOLEH ada teks tambahan di luar struktur itu.
                             - JANGAN memberikan pengantar, penjelasan, atau penutup.
+                            - Jika tidak ada bahan maka outputkan -
                             `
 
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
