@@ -20,7 +20,7 @@ export const generateRecipe = async (req, res) => {
         }
 
         const userPrompt = `Buatkan 1 resep masakan khas ${recipeType} berdasarkan bahan-bahan berikut (tidak harus semua digunakan, pilih yang cocok dan realistis untuk dimasak bersama): ${ingredients}
-
+                            Jika sebelmum ini tidak ada ingredient terdeteksi bukan bahan makanan seperti none atau strip, maka jangan outputkan apapun
                             Output HARUS ditulis dalam format *Markdown* yang STRUKTURNYA TIDAK BOLEH BERUBAH. Gunakan struktur seperti ini:
 
                             ## Judul Resep
@@ -45,7 +45,7 @@ export const generateRecipe = async (req, res) => {
                             Catatan:
                             - TIDAK BOLEH ada teks tambahan di luar struktur itu.
                             - JANGAN memberikan pengantar, penjelasan, atau penutup.
-                            - Jika tidak ada bahan maka outputkan -
+                            -
                             `
 
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
