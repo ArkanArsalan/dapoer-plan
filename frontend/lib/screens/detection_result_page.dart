@@ -113,7 +113,7 @@ class _DetectionResultState extends State<DetectionResultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Detection Result')),
+      appBar: AppBar(title: const Text('Hasil Deteksi Resep')),
       body: _loadingDetection
           ? const Center(child: CircularProgressIndicator())
           : _buildResultUI(),
@@ -130,17 +130,28 @@ class _DetectionResultState extends State<DetectionResultPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Display the detected image
+          // Display the detected image with shadow
           Center(
-            child: Image.file(
-              widget.image,
-              height: 200,
-              fit: BoxFit.contain,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 6),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.file(
+                  widget.image,
+                  height: 250,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 16),
 
-          // Display detected ingredients
+          // Display detected ingredients with better layout
           const Text(
             'Bahan-bahan Terdeteksi:',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -148,12 +159,13 @@ class _DetectionResultState extends State<DetectionResultPage> {
           const SizedBox(height: 8),
           _detectedIngredients.isEmpty
               ? const Text('Tidak ada bahan terdeteksi.', style: TextStyle(fontSize: 16))
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              : Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
                   children: _detectedIngredients
-                      .map((ingredient) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2.0),
-                            child: Text('- $ingredient', style: const TextStyle(fontSize: 16)),
+                      .map((ingredient) => Chip(
+                            label: Text(ingredient, style: const TextStyle(fontSize: 14)),
+                            backgroundColor: Colors.green.shade100,
                           ))
                       .toList(),
                 ),
@@ -199,13 +211,46 @@ class _DetectionResultState extends State<DetectionResultPage> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             const SizedBox(height: 8),
-            Text(
-              _generatedRecipe!,
-              style: const TextStyle(fontSize: 16),
-            ),
+            // Format the recipe with line breaks and headers
+            _formatRecipe(_generatedRecipe!),
           ],
         ],
       ),
+    );
+  }
+
+  Widget _formatRecipe(String recipe) {
+    final RegExp regExp = RegExp(r'(#+)\s*(.*)');
+    final lines = recipe.split('\n');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: lines.map((line) {
+        final match = regExp.firstMatch(line);
+        if (match != null) {
+          final level = match.group(1)!.length;
+          final text = match.group(2)!;
+          if (level == 1) {
+            return Text(
+              text.toUpperCase(),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            );
+          } else if (level == 2) {
+            return Text(
+              text,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            );
+          } else if (level == 3) {
+            return Text(
+              text,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            );
+          } else {
+            return Text(text, style: const TextStyle(fontSize: 16));
+          }
+        } else {
+          return Text(line, style: const TextStyle(fontSize: 16));
+        }
+      }).toList(),
     );
   }
 }
