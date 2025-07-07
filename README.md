@@ -31,6 +31,42 @@
 - Database: MongoDB
 - Computer Vision: Custom YOLO model or LLM using OpenRouter
 
+## Project Structure
+```bash
+.
+├── README.md
+├── ai_server
+│   ├── best.pt
+│   ├── detect_ingredient.py
+│   └── requirements.txt
+├── backend
+│   ├── controllers
+│   ├── data
+│   ├── index.js
+│   ├── middleware
+│   ├── models
+│   ├── node_modules
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── routes
+│   └── utils
+└── frontend
+    ├── README.md
+    ├── analysis_options.yaml
+    ├── android
+    ├── assets
+    ├── build
+    ├── ios
+    ├── lib
+    ├── linux
+    ├── macos
+    ├── pubspec.lock
+    ├── pubspec.yaml
+    ├── test
+    ├── web
+    └── windows
+```
+
 ## Project Setup
 ### Configuration
 Create .env files in the backend directory:
