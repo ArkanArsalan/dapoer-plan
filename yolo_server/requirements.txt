@@ -1,5 +1,0 @@
-flask
-pillow
-numpy
-ultralytics
-gunicorn
