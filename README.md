@@ -61,7 +61,7 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python app.py
 ```
-### 4. Frontend Setup (Flutter)
+### 3. Frontend Setup (Flutter)
 ```
 cd frontend
 flutter pub get
